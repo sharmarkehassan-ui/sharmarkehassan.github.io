@@ -39,7 +39,7 @@
   *, *::before, *::after { cursor: none !important; }
   .cursor {
     position: fixed;
-    width: 8px; height: 8px;
+    width: 9px; height: 9px;
     background: var(--terra);
     border-radius: 50%;
     pointer-events: none;
@@ -51,10 +51,10 @@
     will-change: transform;
   }
   .cursor.visible { opacity: 1; }
-  .cursor.hover { width: 4px; height: 4px; background: var(--terra-light); }
+  .cursor.hover { width: 7px; height: 7px; background: var(--terra-light); }
   .cursor-ring {
     position: fixed;
-    width: 36px; height: 36px;
+    width: 34px; height: 34px;
     border: 1px solid rgba(196, 80, 26, 0.5);
     border-radius: 50%;
     pointer-events: none;
@@ -66,7 +66,24 @@
     will-change: transform;
   }
   .cursor-ring.visible { opacity: 1; }
-  .cursor-ring.hover { width: 56px; height: 56px; border-color: var(--terra); }
+  .cursor-ring.hover { width: 46px; height: 46px; border-color: var(--terra); }
+  a:focus-visible,
+  button:focus-visible,
+  [role="button"]:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible {
+    outline: 2px solid rgba(196, 80, 26, 0.9);
+    outline-offset: 3px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
   /* Nav */
   nav {
     position: fixed; top: 0; left: 0; right: 0;
@@ -1113,12 +1130,15 @@
     background: rgba(12, 11, 9, 0.88);
     backdrop-filter: blur(12px);
     z-index: 500;
-    display: flex; align-items: flex-start; justify-content: center;
+    display: flex; align-items: center; justify-content: center;
     padding: 48px 24px;
     opacity: 0; pointer-events: none;
     transition: opacity 0.35s ease;
-    overflow-y: auto;
+    overflow: hidden;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
   }
+  .modal-overlay::-webkit-scrollbar { width: 0; height: 0; display: none; }
   .modal-overlay.open { opacity: 1; pointer-events: all; }
   .modal-panel {
     background: var(--bg2);
@@ -1129,7 +1149,20 @@
     transform: translateY(24px);
     transition: transform 0.35s ease;
     flex-shrink: 0;
+    max-height: min(calc(100dvh - 96px), 980px);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
   }
+  .modal-scroll {
+    max-height: min(calc(100dvh - 96px), 980px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .modal-scroll::-webkit-scrollbar { width: 0; height: 0; display: none; }
   .modal-overlay.open .modal-panel { transform: translateY(0); }
   .modal-close {
     position: absolute; top: 24px; right: 24px;
@@ -1145,9 +1178,13 @@
   }
   .modal-close:hover { border-color: var(--terra); color: var(--terra); }
   .modal-header {
-    padding: 48px 48px 40px;
-    border-bottom: 1px solid var(--border);
+    padding: 48px 48px 32px;
     position: relative;
+  }
+  .modal-panel.has-case-nav .modal-header,
+  .modal-panel.has-case-nav .modal-body {
+    padding-left: 48px;
+    padding-right: 48px;
   }
   .modal-type {
     font-family: 'DM Mono', monospace;
@@ -1170,7 +1207,7 @@
     padding-top: 24px;
     border-top: 1px solid var(--border);
   }
-  .modal-body { padding: 48px; }
+  .modal-body { padding: 20px 48px 48px; overflow: visible; min-height: 0; }
   .modal-metrics-row {
     display: grid; grid-template-columns: repeat(3, 1fr);
     gap: 2px; margin-bottom: 48px;
@@ -1361,6 +1398,255 @@
     pointer-events: none; z-index: 9997;
     opacity: 0.4;
   }
+
+  /* Final mobile overrides for case-study modals */
+  @media (max-width: 768px) {
+    .modal-overlay,
+    .post-modal-overlay {
+      padding: 12px !important;
+      align-items: flex-end !important;
+    }
+    .modal-panel,
+    .post-modal-panel {
+      width: calc(100vw - 24px) !important;
+      max-width: calc(100vw - 24px) !important;
+      max-height: calc(100dvh - 24px) !important;
+      margin: 0 auto !important;
+      border-radius: 12px 12px 0 0 !important;
+    }
+    .modal-header,
+    .modal-body,
+    .post-modal-header,
+    .post-modal-body {
+      padding: 24px 20px !important;
+    }
+    .modal-meta-bar {
+      gap: 18px 22px !important;
+      padding-top: 18px !important;
+    }
+    .modal-metrics-row {
+      display: grid !important;
+      grid-template-columns: 1fr !important;
+      gap: 10px !important;
+      margin-bottom: 32px !important;
+    }
+    .cs-metric {
+      padding: 24px 20px !important;
+      min-width: 0 !important;
+    }
+    .cs-metric-val {
+      font-size: clamp(34px, 12vw, 44px) !important;
+      line-height: 0.95 !important;
+      max-width: 100% !important;
+      overflow-wrap: anywhere !important;
+      word-break: break-word !important;
+    }
+    .cs-metric-desc {
+      font-size: 14px !important;
+      line-height: 1.6 !important;
+      max-width: 100% !important;
+    }
+    .modal-links-row {
+      flex-direction: column !important;
+      align-items: stretch !important;
+    }
+    .modal-link-btn {
+      width: 100% !important;
+      text-align: center !important;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .modal-title {
+      font-size: 32px !important;
+      line-height: 1.05 !important;
+      padding-right: 40px;
+    }
+    .modal-subtitle,
+    .modal-section p,
+    .post-modal-body p {
+      font-size: 14px !important;
+    }
+    .modal-section h3,
+    .post-modal-body h2 {
+      font-size: 18px !important;
+      line-height: 1.25 !important;
+    }
+    .modal-decision-item {
+      grid-template-columns: 22px 1fr !important;
+      gap: 10px !important;
+    }
+  }
+
+
+
+  /* Polished case study navigation */
+  .case-study-nav {
+    margin-top: 40px;
+    padding-top: 28px;
+    border-top: 1px solid var(--border);
+  }
+  .case-study-nav-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+  }
+  .case-study-nav-label {
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+  .case-study-nav-title {
+    font-size: 14px;
+    color: var(--text);
+  }
+  .case-study-progress {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 14px;
+  }
+  .case-study-progress-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.18);
+    transition: transform 180ms ease, background 180ms ease;
+  }
+  .case-study-progress-dot.active {
+    background: var(--terra);
+    transform: scale(1.2);
+  }
+  .case-study-swipe-hint {
+    margin-top: 12px;
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+  .case-study-side-nav {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 18;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.16);
+    background: rgba(12, 11, 9, 0.72);
+    backdrop-filter: blur(10px);
+    color: var(--text);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.18);
+    transition: border-color 180ms ease, background 180ms ease, color 180ms ease, opacity 180ms ease;
+    cursor: pointer;
+  }
+  .case-study-side-nav:hover {
+    border-color: var(--terra);
+    color: var(--terra);
+    background: rgba(12, 11, 9, 0.9);
+  }
+  .case-study-side-nav:focus-visible {
+    outline: 2px solid var(--terra);
+    outline-offset: 2px;
+  }
+  .case-study-side-nav.prev { left: 24px; }
+  .case-study-side-nav.next { left: auto; right: 24px; }
+  .case-study-side-nav svg {
+    width: 20px;
+    height: 20px;
+  }
+  .case-study-side-nav.is-hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+    .post-side-nav {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 18;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.16);
+    background: rgba(12, 11, 9, 0.72);
+    backdrop-filter: blur(10px);
+    color: var(--text);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.18);
+    transition: border-color 180ms ease, background 180ms ease, color 180ms ease, opacity 180ms ease;
+    cursor: pointer;
+  }
+  .post-side-nav:hover {
+    border-color: var(--terra);
+    color: var(--terra);
+    background: rgba(12, 11, 9, 0.9);
+  }
+  .post-side-nav:focus-visible {
+    outline: 2px solid var(--terra);
+    outline-offset: 2px;
+  }
+  .post-side-nav.prev { left: 24px; }
+  .post-side-nav.next { left: auto; right: 24px; }
+  .post-side-nav svg {
+    width: 20px;
+    height: 20px;
+  }
+  .post-side-nav.is-hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+  @media (max-width: 768px) {
+    .case-study-nav-title {
+      white-space: normal;
+      overflow: visible;
+      text-overflow: initial;
+    }
+    .case-study-side-nav {
+      width: 44px;
+      height: 44px;
+      background: rgba(12, 11, 9, 0.88);
+    }
+    .case-study-side-nav.prev { left: 12px; }
+    .case-study-side-nav.next { right: 12px; }
+    .post-side-nav {
+      width: 44px;
+      height: 44px;
+      background: rgba(12, 11, 9, 0.88);
+    }
+    .post-side-nav.prev { left: 12px; }
+    .post-side-nav.next { right: 12px; }
+    .modal-close {
+      right: 16px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .modal-overlay {
+      padding: 16px 10px;
+    }
+    .modal-panel,
+    .modal-scroll {
+      max-height: calc(100dvh - 20px);
+      border-radius: 2px;
+    }
+    .modal-panel.has-case-nav .modal-header,
+    .modal-panel.has-case-nav .modal-body {
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+    .modal-panel.has-case-nav .modal-header {
+      padding-top: 56px;
+    }
+    .modal-panel.has-case-nav .modal-body {
+      padding-top: 28px;
+    }
+  }
+
 </style>
 </head>
 <body>
@@ -1758,20 +2044,34 @@
 
 <!-- ═══════════════ CASE STUDY MODAL ═══════════════ -->
 <div class="modal-overlay" id="caseModal" onclick="handleModalBackdropClick(event, 'caseModal')">
+  <button class="case-study-side-nav prev is-hidden" id="caseStudyPrevBtn" type="button" aria-label="Previous case study" onclick="navigateCaseStudy(-1)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg>
+  </button>
   <div class="modal-panel" id="caseModalPanel">
-    <button class="modal-close" onclick="closeModal('caseModal')">×</button>
-    <div class="modal-header" id="caseModalHeader"></div>
-    <div class="modal-body" id="caseModalBody"></div>
+    <div class="modal-scroll" id="caseModalScroll">
+      <button class="modal-close" onclick="closeModal('caseModal')">×</button>
+      <div class="modal-header" id="caseModalHeader"></div>
+      <div class="modal-body" id="caseModalBody"></div>
+    </div>
   </div>
+  <button class="case-study-side-nav next is-hidden" id="caseStudyNextBtn" type="button" aria-label="Next case study" onclick="navigateCaseStudy(1)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg>
+  </button>
 </div>
 
 <!-- ═══════════════ POST MODAL ═══════════════ -->
 <div class="post-modal-overlay" id="postModal" onclick="handleModalBackdropClick(event, 'postModal')">
+  <button class="post-side-nav prev is-hidden" id="postPrevBtn" type="button" aria-label="Previous article" onclick="navigatePost(-1)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+  </button>
   <div class="post-modal-panel" id="postModalPanel">
     <button class="modal-close" onclick="closeModal('postModal')">×</button>
     <div class="post-modal-header" id="postModalHeader"></div>
     <div class="post-modal-body" id="postModalBody"></div>
   </div>
+  <button class="post-side-nav next is-hidden" id="postNextBtn" type="button" aria-label="Next article" onclick="navigatePost(1)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+  </button>
 </div>
 
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
@@ -1843,15 +2143,39 @@ const revealObserver = new IntersectionObserver(entries => {
 document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
 // ── Modal system ─────────────────────────────────────────────────
+let pageScrollY = 0;
 function openModal(id) {
   const overlay = document.getElementById(id);
+  pageScrollY = window.scrollY || window.pageYOffset || 0;
   overlay.classList.add('open');
-  document.body.style.overflow = 'hidden';
+  document.body.style.position = 'fixed';
+  document.body.style.top = `-${pageScrollY}px`;
+  document.body.style.left = '0';
+  document.body.style.right = '0';
+  document.body.style.width = '100%';
   overlay.scrollTop = 0;
 }
 function closeModal(id) {
   document.getElementById(id).classList.remove('open');
-  document.body.style.overflow = '';
+  if (!document.querySelector('.modal-overlay.open, .post-modal-overlay.open')) {
+    document.body.style.position = '';
+    document.body.style.top = '';
+    document.body.style.left = '';
+    document.body.style.right = '';
+    document.body.style.width = '';
+    window.scrollTo(0, pageScrollY);
+  }
+  if (id === 'caseModal') {
+    activeCaseStudyKey = null;
+    document.getElementById('caseModalPanel').classList.remove('has-case-nav');
+    if (caseStudyPrevBtn) caseStudyPrevBtn.classList.add('is-hidden');
+    if (caseStudyNextBtn) caseStudyNextBtn.classList.add('is-hidden');
+  }
+  if (id === 'postModal') {
+    activePostKey = null;
+    if (postPrevBtn) postPrevBtn.classList.add('is-hidden');
+    if (postNextBtn) postNextBtn.classList.add('is-hidden');
+  }
 }
 function handleModalBackdropClick(e, id) {
   if (e.target === document.getElementById(id)) closeModal(id);
@@ -1895,7 +2219,13 @@ function submitResumeRequest(event) {
   });
 }
 document.addEventListener('keydown', e => {
+  const caseModalOpen = document.getElementById('caseModal').classList.contains('open');
+  const postModalOpen = document.getElementById('postModal').classList.contains('open');
   if (e.key === 'Escape') { closeModal('caseModal'); closeModal('postModal'); closeModal('resumeRequestModal'); }
+  if (caseModalOpen && e.key === 'ArrowRight') navigateCaseStudy(1);
+  if (caseModalOpen && e.key === 'ArrowLeft') navigateCaseStudy(-1);
+  if (postModalOpen && e.key === 'ArrowRight') navigatePost(1);
+  if (postModalOpen && e.key === 'ArrowLeft') navigatePost(-1);
 });
 
 // ── Case study data ──────────────────────────────────────────────
@@ -2035,11 +2365,74 @@ const caseStudies = {
   }
 };
 
+const caseStudyOrder = ['callflow', 'geo', 'enigma'];
+let activeCaseStudyKey = null;
+let caseTouchStartX = 0;
+let caseTouchDeltaX = 0;
+
+function getCaseStudyNav(key) {
+  const index = caseStudyOrder.indexOf(key);
+  const prevKey = caseStudyOrder[(index - 1 + caseStudyOrder.length) % caseStudyOrder.length];
+  const nextKey = caseStudyOrder[(index + 1) % caseStudyOrder.length];
+  return {
+    index,
+    total: caseStudyOrder.length,
+    prevKey,
+    nextKey,
+    prevTitle: caseStudies[prevKey].title.split(' — ')[0],
+    nextTitle: caseStudies[nextKey].title.split(' — ')[0]
+  };
+}
+
+function renderCaseStudyNav(key) {
+  const nav = getCaseStudyNav(key);
+  const dots = caseStudyOrder.map((caseKey, i) => `<span class="case-study-progress-dot${i === nav.index ? ' active' : ''}" aria-hidden="true"></span>`).join('');
+  return `
+    <div class="case-study-nav">
+      <div class="case-study-nav-meta">
+        <div class="case-study-nav-label">Case study ${nav.index + 1} / ${nav.total}</div>
+        <div class="case-study-nav-title">Next: ${nav.nextTitle}</div>
+        <div class="case-study-progress" aria-hidden="true">${dots}</div>
+        <div class="case-study-swipe-hint">Swipe or use the arrows to move between case studies.</div>
+      </div>
+    </div>
+  `;
+}
+
+const caseModalPanel = document.getElementById('caseModalPanel');
+const caseModalScroll = document.getElementById('caseModalScroll');
+const caseStudyPrevBtn = document.getElementById('caseStudyPrevBtn');
+const caseStudyNextBtn = document.getElementById('caseStudyNextBtn');
+
+function positionCaseStudySideNav() {
+  const panel = caseModalPanel;
+  const overlay = document.getElementById('caseModal');
+  if (!panel || !overlay || !overlay.classList.contains('open')) return;
+  const rect = panel.getBoundingClientRect();
+  const centerY = Math.max(72, Math.min(window.innerHeight - 72, rect.top + (rect.height / 2)));
+  const gap = window.innerWidth <= 768 ? 10 : 18;
+  const buttonSize = window.innerWidth <= 768 ? 44 : 56;
+  if (caseStudyPrevBtn) {
+    caseStudyPrevBtn.classList.remove('is-hidden');
+    caseStudyPrevBtn.style.top = `${centerY}px`;
+    caseStudyPrevBtn.style.left = `${Math.max(8, rect.left - buttonSize - gap)}px`;
+  }
+  if (caseStudyNextBtn) {
+    caseStudyNextBtn.classList.remove('is-hidden');
+    caseStudyNextBtn.style.top = `${centerY}px`;
+    caseStudyNextBtn.style.left = `${Math.min(window.innerWidth - buttonSize - 8, rect.right + gap)}px`;
+    caseStudyNextBtn.style.right = 'auto';
+  }
+}
+
 function openCaseModal(key) {
   const data = caseStudies[key];
   if (!data) return;
+  activeCaseStudyKey = key;
   const header = document.getElementById('caseModalHeader');
   const body = document.getElementById('caseModalBody');
+  const panel = document.getElementById('caseModalPanel');
+  panel.classList.add('has-case-nav');
   const metaHTML = data.meta.map(m => `<div class="cs-meta"><div class="cs-meta-label">${m.label}</div><div class="cs-meta-val">${m.val}</div></div>`).join('');
   const metricsHTML = data.metrics.map(m => `<div class="cs-metric"><div class="cs-metric-val">${m.val}</div><div class="cs-metric-desc">${m.desc}</div></div>`).join('');
   const linksHTML = (data.links || []).length
@@ -2060,9 +2453,31 @@ function openCaseModal(key) {
     ${linksHTML}
     <div class="modal-meta-bar">${metaHTML}</div>
   `;
-  body.innerHTML = `<div class="modal-metrics-row">${metricsHTML}</div>${sectionsHTML}`;
+  body.innerHTML = `<div class="modal-metrics-row">${metricsHTML}</div>${sectionsHTML}${renderCaseStudyNav(key)}`;
   openModal('caseModal');
+  if (caseModalScroll) caseModalScroll.scrollTop = 0;
+  if (caseStudyPrevBtn) caseStudyPrevBtn.setAttribute('aria-label', `Open previous case study: ${getCaseStudyNav(key).prevTitle}`);
+  if (caseStudyNextBtn) caseStudyNextBtn.setAttribute('aria-label', `Open next case study: ${getCaseStudyNav(key).nextTitle}`);
+  requestAnimationFrame(positionCaseStudySideNav);
   return false;
+}
+
+function navigateCaseStudy(direction) {
+  if (!activeCaseStudyKey) return;
+  const currentIndex = caseStudyOrder.indexOf(activeCaseStudyKey);
+  if (currentIndex === -1) return;
+  const nextIndex = (currentIndex + direction + caseStudyOrder.length) % caseStudyOrder.length;
+  openCaseModal(caseStudyOrder[nextIndex]);
+}
+
+if (caseModalScroll) {
+  caseModalScroll.addEventListener('scroll', positionCaseStudySideNav, { passive: true });
+}
+window.addEventListener('resize', positionCaseStudySideNav);
+window.addEventListener('resize', positionPostSideNav);
+const postModalOverlayEl = document.getElementById('postModal');
+if (postModalOverlayEl) {
+  postModalOverlayEl.addEventListener('scroll', positionPostSideNav, { passive: true });
 }
 
 // ── Post modal data ──────────────────────────────────────────────
@@ -2139,11 +2554,65 @@ const posts = {
   }
 };
 
+
+const postOrder = ['post-1', 'post-2', 'post-3', 'post-4', 'post-5'];
+let activePostKey = null;
+const postModalPanel = document.getElementById('postModalPanel');
+const postPrevBtn = document.getElementById('postPrevBtn');
+const postNextBtn = document.getElementById('postNextBtn');
+
+function getPostNav(key) {
+  const index = postOrder.indexOf(key);
+  const safeIndex = index === -1 ? 0 : index;
+  const total = postOrder.length;
+  const prevKey = postOrder[(safeIndex - 1 + total) % total];
+  const nextKey = postOrder[(safeIndex + 1) % total];
+  return {
+    index: safeIndex,
+    total,
+    prevKey,
+    nextKey,
+    prevTitle: posts[prevKey].title,
+    nextTitle: posts[nextKey].title
+  };
+}
+
+function positionPostSideNav() {
+  const panel = postModalPanel;
+  const overlay = document.getElementById('postModal');
+  if (!panel || !overlay || !overlay.classList.contains('open')) return;
+  const rect = panel.getBoundingClientRect();
+  const centerY = Math.max(72, Math.min(window.innerHeight - 72, rect.top + (rect.height / 2)));
+  const gap = window.innerWidth <= 768 ? 10 : 18;
+  const buttonSize = window.innerWidth <= 768 ? 44 : 56;
+  if (postPrevBtn) {
+    postPrevBtn.classList.remove('is-hidden');
+    postPrevBtn.style.top = `${centerY}px`;
+    postPrevBtn.style.left = `${Math.max(8, rect.left - buttonSize - gap)}px`;
+  }
+  if (postNextBtn) {
+    postNextBtn.classList.remove('is-hidden');
+    postNextBtn.style.top = `${centerY}px`;
+    postNextBtn.style.left = `${Math.min(window.innerWidth - buttonSize - 8, rect.right + gap)}px`;
+    postNextBtn.style.right = 'auto';
+  }
+}
+
+function navigatePost(direction) {
+  if (!activePostKey) return;
+  const currentIndex = postOrder.indexOf(activePostKey);
+  if (currentIndex === -1) return;
+  const nextIndex = (currentIndex + direction + postOrder.length) % postOrder.length;
+  openPostModal(postOrder[nextIndex]);
+}
+
 function openPostModal(key) {
   const data = posts[key];
   if (!data) return;
+  activePostKey = key;
   const header = document.getElementById('postModalHeader');
   const body = document.getElementById('postModalBody');
+  const nav = getPostNav(key);
   const metaHTML = data.meta.map(m => `<div class="cs-meta"><div class="cs-meta-label">${m.label}</div><div class="cs-meta-val">${m.val}</div></div>`).join('');
   header.innerHTML = `
     <div class="modal-type">${data.type}</div>
@@ -2152,7 +2621,74 @@ function openPostModal(key) {
   `;
   body.innerHTML = data.body;
   openModal('postModal');
+  if (postPrevBtn) postPrevBtn.setAttribute('aria-label', `Open previous article: ${nav.prevTitle}`);
+  if (postNextBtn) postNextBtn.setAttribute('aria-label', `Open next article: ${nav.nextTitle}`);
+  requestAnimationFrame(positionPostSideNav);
   return false;
+}
+
+const caseModalBodyEl = document.getElementById('caseModalScroll');
+let caseTouchStartY = 0;
+let caseTouchDeltaY = 0;
+if (caseModalBodyEl) {
+  caseModalBodyEl.addEventListener('touchstart', function (e) {
+    if (!document.getElementById('caseModal').classList.contains('open')) return;
+    caseTouchStartX = e.changedTouches[0].clientX;
+    caseTouchStartY = e.changedTouches[0].clientY;
+    caseTouchDeltaX = 0;
+    caseTouchDeltaY = 0;
+  }, { passive: true });
+
+  caseModalBodyEl.addEventListener('touchmove', function (e) {
+    if (!document.getElementById('caseModal').classList.contains('open')) return;
+    caseTouchDeltaX = e.changedTouches[0].clientX - caseTouchStartX;
+    caseTouchDeltaY = e.changedTouches[0].clientY - caseTouchStartY;
+  }, { passive: true });
+
+  caseModalBodyEl.addEventListener('touchend', function () {
+    if (!document.getElementById('caseModal').classList.contains('open')) return;
+    const horizontalSwipe = Math.abs(caseTouchDeltaX) > 80 && Math.abs(caseTouchDeltaX) > Math.abs(caseTouchDeltaY) * 1.35;
+    if (horizontalSwipe) {
+      navigateCaseStudy(caseTouchDeltaX < 0 ? 1 : -1);
+    }
+    caseTouchStartX = 0;
+    caseTouchStartY = 0;
+    caseTouchDeltaX = 0;
+    caseTouchDeltaY = 0;
+  }, { passive: true });
+}
+
+const postModalTouchEl = document.getElementById('postModalPanel');
+let postTouchStartX = 0;
+let postTouchStartY = 0;
+let postTouchDeltaX = 0;
+let postTouchDeltaY = 0;
+if (postModalTouchEl) {
+  postModalTouchEl.addEventListener('touchstart', function (e) {
+    if (!document.getElementById('postModal').classList.contains('open')) return;
+    postTouchStartX = e.changedTouches[0].clientX;
+    postTouchStartY = e.changedTouches[0].clientY;
+    postTouchDeltaX = 0;
+    postTouchDeltaY = 0;
+  }, { passive: true });
+
+  postModalTouchEl.addEventListener('touchmove', function (e) {
+    if (!document.getElementById('postModal').classList.contains('open')) return;
+    postTouchDeltaX = e.changedTouches[0].clientX - postTouchStartX;
+    postTouchDeltaY = e.changedTouches[0].clientY - postTouchStartY;
+  }, { passive: true });
+
+  postModalTouchEl.addEventListener('touchend', function () {
+    if (!document.getElementById('postModal').classList.contains('open')) return;
+    const horizontalSwipe = Math.abs(postTouchDeltaX) > 80 && Math.abs(postTouchDeltaX) > Math.abs(postTouchDeltaY) * 1.35;
+    if (horizontalSwipe) {
+      navigatePost(postTouchDeltaX < 0 ? 1 : -1);
+    }
+    postTouchStartX = 0;
+    postTouchStartY = 0;
+    postTouchDeltaX = 0;
+    postTouchDeltaY = 0;
+  }, { passive: true });
 }
 </script>
 
