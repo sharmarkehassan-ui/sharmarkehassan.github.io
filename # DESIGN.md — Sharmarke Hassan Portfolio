@@ -1,0 +1,127 @@
+# DESIGN.md — Sharmarke Hassan Portfolio
+
+## Visual Theme & Atmosphere
+Warm editorial minimalism. The portfolio treats itself like a well-edited 
+long-form piece: generous white space, strong typographic hierarchy, one 
+restrained accent colour. Nothing decorates; everything communicates. The 
+tone is considered and direct — a PM who thinks before they speak and 
+edits before they ship.
+
+## Color Palette
+
+| Token        | Hex       | Role                                      |
+|--------------|-----------|-------------------------------------------|
+| --bg         | #F6F2EB   | Primary background — warm parchment       |
+| --bg2        | #EDEAE2   | Secondary surface — section backgrounds   |
+| --bg3        | #E5E1D8   | Tertiary — card hover states              |
+| --surface    | #DEDAD1   | Raised surfaces — cards, inputs           |
+| --border     | #C8C4BA   | Dividers, card outlines                   |
+| --terra      | #C4501A   | Primary accent — links, highlights, CTAs  |
+| --terra-light| #D96030   | Hover state for accent elements           |
+| --terra-dim  | rgba(196,80,26,0.09) | Subtle accent fills, badges  |
+| --text       | #1A1714   | Primary text — near-black, warm           |
+| --text-mid   | #5A5450   | Secondary text — descriptions, meta       |
+| --text-dim   | #9A9690   | Tertiary — timestamps, labels             |
+
+Never use pure black (#000) or pure white (#FFF). Always pull from the 
+warm palette.
+
+## Typography
+
+| Role           | Family              | Weight | Size              |
+|----------------|---------------------|--------|-------------------|
+| Display / Hero | Cormorant Garamond  | 300    | clamp(56px,8vw,96px) |
+| Section titles | Cormorant Garamond  | 300    | clamp(36px,5vw,56px) |
+| Card titles    | Cormorant Garamond  | 400    | 28–32px           |
+| Body           | Karla               | 400    | 15–16px           |
+| Body small     | Karla               | 400    | 13–14px           |
+| Labels/meta    | DM Mono             | 300    | 10–11px           |
+
+Google Fonts import:
+`Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400`
+`Karla:wght@300;400;500;600`
+`DM+Mono:wght@300;400`
+
+Rules:
+- Cormorant Garamond for display only. Never use it for body paragraphs.
+- DM Mono is for timestamps, status badges, and eyebrow labels only.
+  Do not use it for navigation, body copy, or any reading context.
+- Line-height: 1.7 for body, 1.1 for display headings.
+- Letter-spacing: 0.2em on DM Mono labels, none on Karla body.
+
+## Layout Principles
+
+- Max content width: 900px for hero, 780px for modals, 680px for writing.
+- Section padding: 100px 48px desktop, 64px 20px mobile.
+- Grid: single column stack. No multi-column body layouts.
+- Spacing scale: 8px base. Common values: 16, 24, 32, 48, 64, 100.
+- Nav: fixed top, transparent until scroll > 40px, then bg rgba(246,242,235,0.94) 
+  with backdrop-filter blur(20px).
+
+## Components
+
+### Buttons
+Primary: background --terra, color #F6F2EB, padding 14px 32px, no border-radius 
+(border-radius: 2px only), font-size 12px, Karla, letter-spacing 0.12em, uppercase.
+Hover: background --terra-light.
+
+Ghost: transparent background, border 1px solid --border, color --text-mid.
+Hover: border-color --text-mid, color --text.
+
+Never use rounded buttons (border-radius > 4px).
+
+### Cards (Project cards)
+Background --bg2, padding 48px 56px, 2px left border in --terra that 
+scales from scaleY(0) to scaleY(1) on hover. No box-shadow. Hover 
+background shifts to --bg3.
+
+### Modals
+Background --bg, border 1px solid --border, box-shadow 0 24px 64px 
+rgba(26,23,20,0.14), max-width 780px (case study) or 680px (writing).
+Overlay: rgba(246,242,235,0.82) with backdrop-filter blur(14px).
+
+### Status badges
+Shipped: background rgba(74,124,89,0.15), border rgba(74,124,89,0.4), 
+color #3A6B48.
+In Build: background --terra-dim, border rgba(196,80,26,0.3), color --terra.
+Font: DM Mono, 9px, letter-spacing 0.15em, uppercase.
+
+## Depth & Elevation
+No decorative shadows on cards. Shadows reserved for modals only.
+No noise overlays, no background grid patterns, no radial glows except 
+one subtle radial on the hero (rgba(196,80,26,0.05)).
+
+## Do's
+- Use --terra for one thing per component. Not multiple.
+- Let typography hierarchy do the work before adding colour.
+- Keep section labels in DM Mono, 10px, --terra, uppercase.
+- Maintain generous whitespace. When in doubt, add more.
+- Use Cormorant Garamond italics (`<em>`) for one key word in hero headlines.
+
+## Don'ts
+- No custom cursor (cursor: none).
+- No noise textures or grain overlays.
+- No background grid lines.
+- No dark mode surfaces (#0C0B09 etc.) anywhere.
+- No rounded pills on primary buttons.
+- No DM Mono for navigation or body text.
+- No more than two font families visible at once in any section.
+
+## Responsive
+- Mobile breakpoint: 768px.
+- Nav collapses to hamburger at 768px.
+- Project cards go single column at 768px.
+- Modal panels slide up from bottom on mobile (border-radius 12px 12px 0 0).
+- Section padding reduces to 64px 20px on mobile.
+
+## Agent Prompt Guide
+Quick reference for prompting any AI with this design system:
+
+Colors: bg #F6F2EB, text #1A1714, accent #C4501A, border #C8C4BA
+Fonts: Cormorant Garamond (display), Karla (body), DM Mono (labels only)
+Feel: warm editorial, text-first, no decoration, one accent
+
+Example prompt:
+"Add a testimonials section. Follow DESIGN.md: use --bg2 as background, 
+Cormorant Garamond italic for the quote, Karla for attribution, DM Mono 
+for the label. One --terra accent rule max."
